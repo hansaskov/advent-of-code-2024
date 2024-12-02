@@ -11,7 +11,7 @@ pub fn part1(input: &str) -> i64 {
             let mut iter = line.split_whitespace();
             Some((
                 iter.next()?.parse::<i64>().ok()?,
-                iter.next()?.parse::<i64>().ok()?
+                iter.next()?.parse::<i64>().ok()?,
             ))
         })
         .unzip();
@@ -19,46 +19,42 @@ pub fn part1(input: &str) -> i64 {
     numbers1.sort_unstable();
     numbers2.sort_unstable();
 
-    numbers1.iter()
+    numbers1
+        .iter()
         .zip(numbers2.iter())
         .map(|(a, b)| (a - b).abs())
         .sum()
 }
 
 pub fn part2(input: &str) -> i64 {
-    let (numbers1, numbers2): (Vec<i64>, Vec<i64>) = input
+    let mut count_map1: HashMap<i64, i64> = HashMap::new();
+    let mut count_map2: HashMap<i64, i64> = HashMap::new();
+
+    input
         .lines()
         .filter_map(|line| {
             let mut iter = line.split_whitespace();
             Some((
                 iter.next()?.parse::<i64>().ok()?,
-                iter.next()?.parse::<i64>().ok()?
+                iter.next()?.parse::<i64>().ok()?,
             ))
         })
-        .unzip();
+        .for_each(|(numbers1, numbers2)| {
+            *count_map1.entry(numbers1).or_insert(0) += 1;
+            *count_map2.entry(numbers2).or_insert(0) += 1;
+        });
 
-    let mut count_map: HashMap<i64, (i64, i64)> = HashMap::new();
-
-    for &num in &numbers1 {
-        count_map.entry(num)
-            .and_modify(|(count1, _)| *count1 += 1)
-            .or_insert((1, 0));
-    }
-
-    for &num in &numbers2 {
-        count_map.entry(num)
-            .and_modify(|(_, count2)| *count2 += 1)
-            .or_insert((0, 1));
-    }
-
-    count_map.into_iter()
-        .map(|(key, (count1, count2))| key * count1 * count2)
+    count_map1
+        .iter()
+        .filter_map(|(&key, &count1)| count_map2.get(&key).map(|&count2| key * count1 * count2))
         .sum()
 }
 
 #[cfg(test)]
 mod tests {
+
     use super::*;
+    use test::Bencher;
 
     const EXAMPLE_INPUT: &str = "3 4
                                  4 3
