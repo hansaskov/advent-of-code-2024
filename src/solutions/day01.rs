@@ -54,7 +54,6 @@ pub fn part2(input: &str) -> i64 {
 mod tests {
 
     use super::*;
-    use test::Bencher;
 
     const EXAMPLE_INPUT: &str = "3 4
                                  4 3
