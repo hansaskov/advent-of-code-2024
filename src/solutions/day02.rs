@@ -24,15 +24,10 @@ pub fn part1(input: &str) -> i64 {
             let is_less_than_4 = diff_report.iter().all(|v| v.abs() <= 3);
 
             if (is_all_ascending || is_all_decending) && is_more_than_0 && is_less_than_4 {
-                
-                println!("{report:#?}");
-                println!("{diff_report:#?}");
-                println!("-------------");
-                
-                return Some(1)
+                Some(1)
+            } else {
+                None
             }
-            
-            return None;
         })
         .sum()
 }
